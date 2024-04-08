@@ -8,3 +8,8 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/")
 async def get_main_page(request: Request):
     return templates.TemplateResponse("headings.html", {"request": request})
+
+
+@router.get("/location")
+async def get_location_page(request: Request):
+    return templates.TemplateResponse("location.html", {"request": request})
