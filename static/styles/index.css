@@ -40,7 +40,8 @@ header {
 
 } 
 
-.header-catalog {
+.header-catalog a {
+    display: inline-block;
     width: 600px;
     height: 200px;
     background-color: #D9D9D9;
@@ -59,7 +60,8 @@ header {
     display: flex;
 }
 
-.header-location {
+.header-location a{
+    display: inline-block;
     width: 400px;
     height: 200px;
     background-color: #D9D9D9;
@@ -73,7 +75,8 @@ header {
     line-height: 200px; 
 }
 
-.header-about {
+.header-about a {
+    display: inline-block;
     margin-left: 10px;
     width: 190px;
     height: 200px;
@@ -93,7 +96,8 @@ header {
     display: flex;
 }
 
-.header-auth {
+.header-auth a {
+    display: inline-block;
     width: 290px;
     height: 200px;
     background-color: #D9D9D9;
@@ -109,7 +113,8 @@ header {
     line-height: 200px; 
 }
 
-.header-register {
+.header-register a{
+    display: inline-block;
     margin-left: 10px;
     width: 300px;
     height: 200px;
@@ -124,24 +129,24 @@ header {
     line-height: 200px; 
 }
 
-.header-register:hover {
+.header-register a:hover {
     background-color: #c7c7c7;
 }
 
-.header-auth:hover {
+.header-auth a:hover {
     background-color: #c7c7c7;
 }
 
-.header-location:hover {
+.header-location a:hover {
     background-color: #c7c7c7;
 }
 
-.header-about:hover {
+.header-about a:hover {
     background-color: #c7c7c7;
 }
 
 
-.header-catalog:hover {
+.header-catalog a:hover {
     background-color: #c7c7c7;
 }
 
@@ -149,42 +154,42 @@ header {
     .headers-2 {
         display: block;
     }
-    .header-location {
+    .header-location a{
         width: 600px;
     }
-    .header-about {
+    .header-about a{
         margin: 10px 0 0 0;
         width: 600px;
     }
     .headers-3 {
         display: block;
     }
-    .header-auth {
+    .header-auth a {
         width: 600px;
     }
-    .header-register {
+    .header-register a{
         margin: 10px 0 0 0;
         width: 600px;
     }
   }
 
   @media (max-width: 601px) {
-    .header-catalog {
+    .header-catalog a {
         width: 300px;
     }
-    .header-location {
+    .header-location a {
         width: 300px;
     }
-    .header-about {
+    .header-about a {
         width: 300px;
     }
     .headers-3 {
         display: block;
     }
-    .header-auth {
+    .header-auth a {
         width: 300px;
     }
-    .header-register {
+    .header-register a {
         width: 300px;
     }
   }

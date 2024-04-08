@@ -12,4 +12,9 @@ async def get_main_page(request: Request):
 
 @router.get("/location")
 async def get_location_page(request: Request):
-    return templates.TemplateResponse("location.html", {"request": request})
+    return templates.TemplateResponse("location.html", {"request": request})\
+    
+
+@router.get("/catalog")
+async def get_catalog_page(request: Request):
+    return templates.TemplateResponse("catalog.html", {"request": request})

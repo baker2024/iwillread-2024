@@ -20,7 +20,10 @@ header {
     text-align: center;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+}
+
+.header-logo-name a {
+    font-size: 48px
 }
 
 .header-logo-img img{
@@ -29,17 +32,13 @@ header {
     margin-right: 15px;
 }
 
-.header-logo-name a {
-    font-size: 48px
-}
 
-.back {
+.about-us a {
+    display: inline-block;
     width: 200px;
     height: 50px;
     border: 1px solid black;
     text-align: center;
-}
-.back a {
     font-size: 22px;
     vertical-align: middle;
     line-height: 50px; 
@@ -50,12 +49,8 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
 }
 
-.about-us {
-    margin-top: 20px;
-}
 
 .info {
     margin-top: 50px;
@@ -73,3 +68,18 @@ header {
     height: 300px;
     background-color: gray;
 }
+
+
+@media (max-width: 525px) {
+    .about-us {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+    .map-container {
+        width: 300px;
+        height: 300px;
+    }
+  }
+
