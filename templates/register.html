@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block css_link %} 
+<link rel="stylesheet" href="/static/styles/register
+.css">
+{% endblock %}
+
+{% block content %}
+    <a href="/">← Главная</a>
+    <div class="container">
+        <div class="img-container">
+            <img src="/static/img/register-img.png" alt="">
+        </div>
+        <div class="register-form">
+            <form action="#" method="post">
+                <label for="firstname">Имя</label>
+                <input type="text" name="firstname" required>
+                <label for="lastname">Фамилия</label>
+                <input type="text" name="lastname" required>
+                <label for="patronymic">Отчество(не обязательно)</label>
+                <input type="text" name="patronymic">
+                <label for="login">Логин</label>
+                <input type="text" name="login" required>
+                <label for="email">Почта</label>
+                <input type="email" name="email" required>
+                <label for="phone">Номер телефона</label>
+                <input type="text" name="phone" required>
+                <label for="password">Пароль</label>
+                <input type="password" name="password" required>
+                <label for="password">Повторите пароль</label>
+                <input type="password" name="confirm_password" required>
+                <label>Продолжая дальше, вы принимаете условия.</label>
+                <input type="submit" value="Зарегистрироваться">
+                <a href="/login" id="login">Уже есть аккаунт? Войти</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
