@@ -39,6 +39,31 @@ header {
     margin-right: auto
 }
 
+.categories {
+    border: 1px solid black;
+    max-height: 300px;
+    padding: 20px;
+    column-count: 3; /* Указываем количество колонок */
+    column-gap: 20px; /* Указываем промежуток между колонками */
+    overflow-y: auto; /* Добавляем вертикальную прокрутку при необходимости */
+}
+
+.category {
+    display: block;
+    border: 1px solid black;
+    padding: 5px;
+    margin-bottom: 10px; /* Добавляем отступ между категориями */
+}
+
+.categories a {
+    font-size: 22px;
+    text-decoration: none; /* Убираем подчеркивание у ссылок */
+}
+
+.category:hover {
+    background-color: #D9D9D9; /* Цвет ссылки после нажатия */
+}
+
 .controls {
     display: flex;
     justify-content: space-between;
@@ -54,6 +79,7 @@ header {
     text-align: center;
     margin-top: 10px;
 }
+
 
 .controls a:hover {
     background-color: #D9D9D9;

@@ -9,6 +9,7 @@
             <a href="/">← Главная</a>
             <a href="">Фильтры</a>
         </div>
+
         
         <h2>Выберите категорию:</h2>
         <div class="categories">
@@ -24,6 +25,8 @@
                 <h1>Категорий нет</h1>
             {% endif %}
         </div>
+        <h1>Категория: {{ category.name }}</h1>
+
         {% if products %}
             <div class="cards">
                 {% for product in products %}
