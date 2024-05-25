@@ -1,23 +1,28 @@
-import uvicorn
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+
 from pages.router import router as router_pages
+from admin.router import router as router_admin
+from core.db_manager import init_models
 
-app = FastAPI()
-app.include_router(router_pages)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_models()
+    print("Database tables was created.")
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.include_router(router_pages)
+app.include_router(router_admin)
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
 
-@app.get("/admin")
-async def admin_panel():
-    return {"message": "Admin Panel"}
 
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    

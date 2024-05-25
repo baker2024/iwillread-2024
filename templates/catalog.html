@@ -11,46 +11,21 @@
         </div>
         
         <div class="cards">
+            {% for product in products %}
             <div class="card">
                 <div class="card-img">
                     <img src="/static/img/card.png" alt="">
                 </div>
                 <div class="card-info">
                     <div class="card-name">
-                        <p>lorem*200</p>
+                        <p>{{ product.name }}</p>
                     </div>
                     <div class="card-link">
-                        <a>Подробнее</a>
+                        <a href="/product/{{ product.id }}">Подробнее</a>
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-img">
-                    <img src="/static/img/card.png" alt="">
-                </div>
-                <div class="card-info">
-                    <div class="card-name">
-                        <p>Название</p>
-                    </div>
-                    <div class="card-link">
-                        <a>Подробнее</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-img">
-                    <img src="/static/img/card.png" alt="">
-                </div>
-                <div class="card-info">
-                    <div class="card-name">
-                        <p>Название</p>
-                    </div>
-                    <div class="card-link">
-                        <a>Подробнее</a>
-                    </div>
-                </div>
-            </div>
-            
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
