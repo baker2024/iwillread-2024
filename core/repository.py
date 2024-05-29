@@ -1,8 +1,10 @@
 from typing import List, Optional
 from sqlalchemy import delete, select, update
 
+
+
 from .db_manager import async_session
-from .models import Category, Product
+from .models import Category, Product, User
 from .schemas import SCategory, SCategoryAdd, SProduct, SProductAdd
 
 
@@ -123,5 +125,4 @@ class CategoryRepository:
             if category:
                 return SCategory.model_validate(category)
             return None
-
 

@@ -12,7 +12,12 @@
         
         <h2>Выберите категорию:</h2>
         <div class="categories">
-            {% if category %}
+            {% if categories %}
+                <a href="/catalog">
+                    <div class="category">
+                        Все товары
+                    </div>
+                </a>
                 {% for category in categories %}
                 <a href="/products?category_id={{ category.id }}">
                     <div class="category">
@@ -24,7 +29,10 @@
                 <h1>Категорий нет</h1>
             {% endif %}
         </div>
+
+        
         {% if products %}
+            <h1>Все товары</h1>
             <div class="cards">
                 {% for product in products %}
                 <div class="card">
@@ -36,6 +44,7 @@
                             <p>{{ product.name }}</p>
                         </div>
                         <div class="card-link">
+                            <h2 style="text-align: center;">{{ product.price}} РУБ.</h2>
                             <a href="/product/{{ product.id }}">Подробнее</a>
                         </div>
                     </div>

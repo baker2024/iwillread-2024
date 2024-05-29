@@ -20,12 +20,19 @@
             </div>
         </div>
         <div class="headers-3">
-            <div class="header-auth">
-                <a href="/login">Вход</a>
-            </div>
-            <div class="header-register">
-                <a href="/register">Регистрация</a>
-            </div>
+            {% if current_user %}
+                
+                <div class="header-catalog">
+                    <a href="/profile">Профиль</a>
+                </div>
+            {% else %}
+                <div class="header-auth">
+                    <a href="/login">Вход</a>
+                </div>
+                <div class="header-register">
+                    <a href="/register">Регистрация</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

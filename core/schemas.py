@@ -1,5 +1,6 @@
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
+from fastapi_users import schemas
 
 
 class SProductAdd(BaseModel):
@@ -29,3 +30,29 @@ class SCategory(BaseModel):
 class SCategoryId(BaseModel):
     ok: bool = True
     category_id: int
+
+
+class SUserRead(schemas.BaseUser[int]):
+    id: int
+    name: str
+    surname: str
+    patronymic: Optional[str]
+    login: str
+    email: EmailStr
+    phone: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SUserCreate(schemas.BaseUserCreate):
+    name: str
+    surname: str
+    patronymic: Optional[str]
+    login: str
+    email: EmailStr
+    phone: str
+
+
+
+class SUserUpdate(schemas.BaseUserUpdate):
+    pass

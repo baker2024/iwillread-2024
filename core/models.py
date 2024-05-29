@@ -1,11 +1,14 @@
 from typing import Optional
 
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable, SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy import String
 from sqlalchemy import Integer
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .db_manager import Base
+
+Base = declarative_base()
 
 
 class Category(Base):
@@ -28,4 +31,17 @@ class Product(Base):
     count: Mapped[int] = mapped_column(nullable=False)
 
     category: Mapped[Category] = relationship("Category", back_populates="products")
+
+
+class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str]
+    surname: Mapped[str]
+    patronymic: Mapped[Optional[str]]
+    login: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str] = mapped_column(unique=True)
+    phone: Mapped[str] = mapped_column(unique=True)
+    hashed_password: Mapped[str]
 

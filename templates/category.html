@@ -13,7 +13,12 @@
         
         <h2>Выберите категорию:</h2>
         <div class="categories">
-            {% if category %}
+            {% if categories %}
+                <a href="/catalog">
+                    <div class="category">
+                        Все товары
+                    </div>
+                </a>
                 {% for category in categories %}
                 <a href="/products?category_id={{ category.id }}">
                     <div class="category">
