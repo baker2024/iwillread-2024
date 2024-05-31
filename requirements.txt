@@ -1,5 +1,10 @@
 fastapi~=0.111.0
-uvicorn
-aiosqlite
-fastapi-users[sqlalchemy]
-pydantic~=2.7.1
+pydantic~=2.7.2
+sqlalchemy~=2.0.30
+postgres
+asyncpg
+passlib~=1.7.4
+python-jose
+sqladmin~=0.17.0
+starlette~=0.37.2
+alembic~=1.13.1

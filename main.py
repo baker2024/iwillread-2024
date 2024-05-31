@@ -1,48 +1,30 @@
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi_users import FastAPIUsers, fastapi_users
+from sqladmin import Admin, ModelView
 
-from core.manager import get_user_manager
-from core.models import User
-from core.schemas import SUserCreate, SUserRead
-from pages.router import router as router_pages
-from admin.router import router as router_admin
-from core.db_manager import init_models
-from core.security import auth_backend
+from admin.auth import AdminAuth, authentication_backend
+from admin.views import ProductsAdmin, UsersAdmin, CategoriesAdmin
+from database import engine
+from products.router import router as router_products
+from users.router import router as router_users
+from core.router import router as router_main
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_models()
-    print("Database tables was created.")
     yield
 
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-
 app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.include_router(router_pages)
-app.include_router(router_admin)
+app.include_router(router_products)
+app.include_router(router_users)
+app.include_router(router_main)
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_register_router(SUserRead, SUserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
+admin = Admin(app, engine, authentication_backend=authentication_backend)
 
-
-
-
-
-    
+admin.add_view(UsersAdmin)
+admin.add_view(ProductsAdmin)
+admin.add_view(CategoriesAdmin)

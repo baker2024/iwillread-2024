@@ -6,7 +6,6 @@
 {% block content %}
     <div class="container">
         <div class="controls">
-            <a href="/">← Главная</a>
             <a href="">Фильтры</a>
         </div>
 
@@ -33,22 +32,21 @@
         <h1>Категория: {{ category.name }}</h1>
 
         {% if products %}
-            <div class="cards">
+            <div class="card-group">
+                <div class="row">
                 {% for product in products %}
-                <div class="card">
-                    <div class="card-img">
-                        <img src="/static/img/card.png" alt="">
-                    </div>
-                    <div class="card-info">
-                        <div class="card-name">
-                            <p>{{ product.name }}</p>
-                        </div>
-                        <div class="card-link">
-                            <a href="/product/{{ product.id }}">Подробнее</a>
+                    <div class="col-md-4">
+                        <div class="card mt-4" style="width: 18rem;">
+                          <img src="/static/img/card.png" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text fs-4">{{ product.price }} ₽</p>
+                            <a href="/product?product_id={{ product.id }}" class="btn btn-primary">Перейти</a>
+                          </div>
                         </div>
                     </div>
-                </div>
                 {% endfor %}
+                </div>
             </div>
         {% else %}
             <h1>Товаров нет</h1>

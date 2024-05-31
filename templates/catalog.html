@@ -1,12 +1,8 @@
 {% extends "base.html" %}
-{% block css_link %} 
-<link rel="stylesheet" href="/static/styles/catalog.css">
-{% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="controls">
-            <a href="/">← Главная</a>
             <a href="">Фильтры</a>
         </div>
         
@@ -33,24 +29,22 @@
         
         {% if products %}
             <h1>Все товары</h1>
-            <div class="cards">
-                {% for product in products %}
-                <div class="card">
-                    <div class="card-img">
-                        <img src="/static/img/card.png" alt="">
-                    </div>
-                    <div class="card-info">
-                        <div class="card-name">
-                            <p>{{ product.name }}</p>
-                        </div>
-                        <div class="card-link">
-                            <h2 style="text-align: center;">{{ product.price}} РУБ.</h2>
-                            <a href="/product/{{ product.id }}">Подробнее</a>
-                        </div>
-                    </div>
+           <div class="card-group">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card">
+                <img src="/static/img/card.png" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text fs-4">{{ product.price }} ₽</p>
+                    <a href="/product?product_id={{ product.id }}" class="btn btn-primary">Перейти</a>
                 </div>
-                {% endfor %}
             </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
         {% else %}
             <h1>Товаров нет</h1>
         {% endif %}

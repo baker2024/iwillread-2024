@@ -1,23 +1,52 @@
 {% extends "base.html" %}
-{% block css_link %} 
-<link rel="stylesheet" href="/static/styles/login.css">
-{% endblock %}
 
 {% block content %}
-    <a href="/">← Главная</a>
     <div class="container">
-        <div class="img-container">
-            <img src="/static/img/login-img.png" alt="">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                        <div class="img-container">
+                            <img src="/static/img/login-img.png" class="img-fluid" alt="">
+                        </div>
+                    </div>
+                <div class="col-md-6">
+                    <div class="register-form">
+                        <label for="login">Логин</label>
+                        <input type="text" class="form-control" name="login" id="login" required>
+                        <label for="password">Пароль</label>
+                        <input type="password" class="form-control" name="password" id="password" required>
+                        <p>Продолжая дальше, вы принимаете условия.</p>
+                        <input type="submit" class="btn btn-primary" value="Войти" onclick="loginUser()">
+                        <a href="/register" class="btn btn-link">Нет аккаунта? Регистрация</a>
+                        <div id="errorMessage" class="mt-2" style="font-size: 22px; color: red;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="login-form">
-            <form action="auth/jwt/login" method="post">
-                <label for="login">Логин</label>
-                <input type="text" name="username" required>
-                <label for="password">Пароль</label>
-                <input type="password" name="password" required>
-                <input type="submit" value="Войти">
-                <a href="/recovery-password" id="recovery-password">Забыли пароль?</a>
-            </form>
-        </div>
-    </div>
+
+    <script>
+        async function loginUser() {
+
+            const url = "http://127.0.0.1:8000/auth/login";
+            const formData = {
+                login: document.getElementById("login").value,
+                password: document.getElementById("password").value
+            };
+            const errorMsg = document.getElementById("errorMessage");
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData),
+                });
+                if (response.status === 200) {
+                    window.location.href = "/";
+                } else {
+                    errorMsg.textContent = "Неверный логин или пароль";
+                    }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+
+            }
+    </script>
 {% endblock %}

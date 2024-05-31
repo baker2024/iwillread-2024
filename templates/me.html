@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block css_link %} 
+<link rel="stylesheet" href="/static/styles/location.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="about-us">
+            <a href="/">← Главная</a>
+            <div class="info">
+                <div class="name">
+                    <h1>Профиль</h1>
+                </div>
+                <div class="adress-info">
+                    <p>ФИО: {{ user.surname }} {{ user.name }} {{ user.patronymic }}</p>
+                </div>
+                <div class="adress-info">
+                    <p>Логин: {{ user.login}}</p>
+                </div>
+                <div class="phone-info">
+                    <p>Номер телефон: {{ user.phone }}</p>
+                </div>
+                <div class="email-info">
+                    <p>Почта: {{ user.email }}</p>
+                </div>
+                <a onclick="logoutUser()">Выйти</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function logoutUser() {
+            const url = "http://127.0.0.1:8000/auth/logout";
+
+            await fetch(url, {
+                method: 'POST',
+            }).then(response => {
+                if (response.status === 200) {
+                    window.location.href = "/"
+                }
+            });
+        }
+    </script>
+{% endblock %}
