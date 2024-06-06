@@ -1,55 +1,44 @@
 {% extends "base.html" %}
-{% block css_link %} 
-<link rel="stylesheet" href="/static/styles/catalog.css">
-{% endblock %}
 
 {% block content %}
+        <style>
+            .card-img-top.fixed-size {
+                height: 400px;
+                object-fit: cover;
+                width: 100%;
+            }
+        </style>
     <div class="container">
-        <div class="controls">
-            <a href="">Фильтры</a>
-        </div>
-
-        
-        <h2>Выберите категорию:</h2>
-        <div class="categories">
+        <h2 class="text-center my-4">Выберите категорию:</h2>
+        <div class="d-flex flex-wrap gap-2 justify-content-center py-5 category-badges">
             {% if categories %}
-                <a href="/catalog">
-                    <div class="category">
-                        Все товары
-                    </div>
-                </a>
+                <a class="badge text-bg-success rounded-pill fs-6 py-3 px-4 text-decoration-none" href="/catalog">Все товары</a>
                 {% for category in categories %}
-                <a href="/products?category_id={{ category.id }}">
-                    <div class="category">
-                        {{ category.name }}
-                    </div>
-                </a>
+                    <a class="badge text-bg-primary rounded-pill fs-6 py-3 px-4 text-decoration-none" href="/products?category_id={{ category.id }}">{{ category.name }}</a>
                 {% endfor %}
             {% else %}
                 <h1>Категорий нет</h1>
             {% endif %}
         </div>
-        <h1>Категория: {{ category.name }}</h1>
-
+    <h1 class="text-center my-4">Категория {{ category.name }}</h1>
         {% if products %}
-            <div class="card-group">
-                <div class="row">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for product in products %}
-                    <div class="col-md-4">
-                        <div class="card mt-4" style="width: 18rem;">
-                          <img src="/static/img/card.png" class="card-img-top" alt="...">
-                          <div class="card-body">
+                <div class="col">
+                    <div class="card">
+                        <img src="{{ product.image }}" class="card-img-top fixed-size" alt="...">
+                        <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
                             <p class="card-text fs-4">{{ product.price }} ₽</p>
                             <a href="/product?product_id={{ product.id }}" class="btn btn-primary">Перейти</a>
-                          </div>
                         </div>
                     </div>
-                {% endfor %}
                 </div>
+                {% endfor %}
             </div>
         {% else %}
-            <h1>Товаров нет</h1>
+            <h1 class="text-center my-4">Товаров нет</h1>
         {% endif %}
     </div>
+
 {% endblock %}

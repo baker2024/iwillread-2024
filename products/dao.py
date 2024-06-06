@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, desc
 
 from dao.base import BaseDAO
 from products.models import Product, Category
@@ -66,4 +66,13 @@ class ProductDAO(BaseDAO):
             result = await session.execute(query)
             return result.mappings().one()
 
-
+    @classmethod
+    async def find_latests_five(cls):
+        async with async_session() as session:
+            query = (
+                select(Product.__table__.columns)
+                .order_by(desc(Product.created_at))
+                .limit(5)
+            )
+            result = await session.execute(query)
+            return result.mappings().all()

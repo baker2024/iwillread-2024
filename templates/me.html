@@ -1,32 +1,54 @@
 {% extends "base.html" %}
-{% block css_link %} 
-<link rel="stylesheet" href="/static/styles/location.css">
-{% endblock %}
 
 {% block content %}
+        <style>
+            .fixed-size {
+                height: 400px;
+                object-fit: cover;
+                width: 100%;
+            }
+        </style>
     <div class="container">
-        <div class="about-us">
-            <a href="/">← Главная</a>
-            <div class="info">
-                <div class="name">
-                    <h1>Профиль</h1>
-                </div>
-                <div class="adress-info">
-                    <p>ФИО: {{ user.surname }} {{ user.name }} {{ user.patronymic }}</p>
-                </div>
-                <div class="adress-info">
-                    <p>Логин: {{ user.login}}</p>
-                </div>
-                <div class="phone-info">
-                    <p>Номер телефон: {{ user.phone }}</p>
-                </div>
-                <div class="email-info">
-                    <p>Почта: {{ user.email }}</p>
-                </div>
-                <a onclick="logoutUser()">Выйти</a>
+    <div class="about-us">
+        <div class="info">
+            <div class="name">
+                <h1 class="display-4">Профиль</h1>
             </div>
+            {% if user.image %}
+                        <div>
+                            <img src="{{ user.image }}" alt="" class="fixed-size">
+                        </div>
+                    {% endif %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="adress-info">
+                        <h2 class="h4">ФИО:</h2>
+                        <p class="lead">{{ user.surname }} {{ user.name }} {{ user.patronymic }}</p>
+                    </div>
+                    <div class="adress-info">
+                        <h2 class="h4">Логин:</h2>
+                        <p class="lead">{{ user.login }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="phone-info">
+                        <h2 class="h4">Номер телефона:</h2>
+                        <p class="lead">{{ user.phone }}</p>
+                    </div>
+                    <div class="email-info">
+                        <h2 class="h4 ">Почта:</h2>
+                        <p class="lead">{{ user.email }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if user.is_superuser %}
+            <a class="btn btn-primary mt-3" role="button" href="/admin">Админ-панель</a>
+            {% endif %}
+            <button class="btn btn-primary mt-3" onclick="logoutUser()">Выйти</button>
         </div>
     </div>
+</div>
+
     <script>
         async function logoutUser() {
             const url = "http://127.0.0.1:8000/auth/logout";

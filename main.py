@@ -10,6 +10,7 @@ from database import engine
 from products.router import router as router_products
 from users.router import router as router_users
 from core.router import router as router_main
+from basket.router import router as router_basket
 
 
 @asynccontextmanager
@@ -19,9 +20,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(router_products)
 app.include_router(router_users)
 app.include_router(router_main)
+app.include_router(router_basket)
 
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 

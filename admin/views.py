@@ -14,7 +14,7 @@ class UsersAdmin(ModelView, model=User):
 
 
 class ProductsAdmin(ModelView, model=Product):
-    column_list = [Product.category, Product.name, Product.description, Product.price, Product.count, Product.image_id]
+    column_list = [Product.category, Product.name, Product.description, Product.price, Product.count, Product.image]
     column_labels = {
         Product.id: "ID",
         Product.category_id: "ID Категории",

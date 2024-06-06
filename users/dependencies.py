@@ -24,9 +24,9 @@ async def get_current_user(token: str = Depends(get_token)):
                 token, config.SECRET_KEY, config.ALGORITHM
             )
         except ExpiredSignatureError:
-            raise TokenExpiredException
+            return False
         except JWTError:
-            raise IncorrectTokenFormatException
+            return False
         user_id: str = payload.get("sub")
         if not user_id:
             raise UserIsNotPresentException

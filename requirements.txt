@@ -8,3 +8,4 @@ python-jose
 sqladmin~=0.17.0
 starlette~=0.37.2
 alembic~=1.13.1
+fastapi-storages

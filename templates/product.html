@@ -1,13 +1,55 @@
 {% extends "base.html" %}
-{% block css_link %} 
-<link rel="stylesheet" href="/static/styles/catalog.css">
-{% endblock %}
+
 
 {% block content %}
     <div class="container">
-        <a href="/catalog">← Главная</a>
-        <h1>Название: {{ product.name }}</h1>
-        <h1>Описание: {{ product.description }}</h1>
-        <h1>Цена: {{ product.price }} рублей</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card my-5">
+                    <img src="{{ product.image }}" class="card-img-top fixed-size" alt="Product Image">
+                    <div class="card-body">
+                        <h1 class="card-title">{{ product.name }}</h1>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text"><strong>Цена:</strong> {{ product.price }} рублей</p>
+                        {% if user %}
+                        <button class="btn btn-primary" onclick='addToCart({{ user.id }}, {{ product.id }});'>Добавить в корзину</button>
+                        {% else %}
+                        <div style="color: red">Чтобы добавить в корзину, выполните вход в аккаунт</div>
+                        {% endif %}
+                        <div id="errorMessage" style="color: red"></div>
+                        <div id="successMessage" style="color: green; background: #b1ff7b;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        async function addToCart(user, product) {
+            console.log(user, product);
+            const url = `http://127.0.0.1:8000/cart/add`;
+            const formData = {
+                user_id: user,
+                product_id: product,
+                quantity: 1
+            };
+            const errorMsg = document.getElementById("errorMessage");
+            const successMsg = document.getElementById("successMessage");
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData),
+                });
+                if (response.status === 200) {
+                    successMsg.textContent = "Товар добавлен в корзину";
+                } else {
+                    errorMsg.textContent = "Не удалось добавить в корзину";
+                    }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+
+            }
+    </script>
 {% endblock %}

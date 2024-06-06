@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4">Корзина</h1>
+        <div class="row">
+                <div class="col-md-8">
+                    {% if items %}
+                        {% for item in items %}
+                            <div class="card mb-3 cart-item">
+                               <div class="card-body d-flex align-items-center">
+                                    <img src="{{ item.CartItem.product.image }}" class="card-img-start me-3" alt="{{ item.CartItem.product.name }}" style="max-width: 100px;">
+                                    <div>
+                                        <h5 class="card-title">{{ item.CartItem.product.name }}</h5>
+                                        <p class="card-text item-price"><strong>Цена:</strong> <span class="product-price">{{ item.CartItem.product.price }}</span> РУБ</p>
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn btn-outline-secondary me-2" onclick="decreaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">-</button>
+                                            <input type="text" class="form-control text-center item-quantity" id="quantity-{{ item.CartItem.product_id }}" value="{{ item.CartItem.quantity }}" readonly>
+                                            <button class="btn btn-outline-secondary ms-2" onclick="increaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">+</button>
+                                            <button class="btn btn-outline-secondary ms-2" onclick="deleteProduct({{ user.id }}, {{ item.CartItem.product_id }})">Удалить</button>
+                                        </div>
+                                        <div id="errorMsg"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                    <h3 class="mb-4">Ваша корзина пуста</h3>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Итоговая сумма</h5>
+                            <p class="card-text" id="total-price">Общая цена всех товаров: {{ total_price }} РУБ</p>
+                            <a href="#" class="btn btn-primary">Оформить заказ</a>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+    <script>
+        async function deleteProduct(user, product) {
+            const url = `http://127.0.0.1:8000/cart/delete`;
+            const formData = {
+                user_id: user,
+                product_id: product
+            };
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData),
+                });
+                if (response.status === 200) {
+                    window.location.href = "/basket";
+                }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+
+            }
+
+        async function updateQuantity(userId, productId, action) {
+            const url = `/cart/quantity`;
+            const quantityChange = action === 'increase' ? 1 : 1;
+            const quantityInput = document.querySelector(`#quantity-${productId}`);
+            const currentQuantity = parseInt(quantityInput.value);
+
+            if (action === 'decrease' && currentQuantity === 1) {
+                return;
+            }
+            try {
+
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId, product_id: productId, quantity: quantityChange, method: action === 'increase' ? 'increase_quantity' : 'decrease_quantity' }),
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const errorMsg = document.getElementById("errorMsg");
+                    if (data.message === "Такого количества нет в наличии") {
+                        errorMsg.textContent = "Большего количества нет в наличии";
+                        return
+                    } else {
+                        const quantityInput = document.querySelector(`#quantity-${productId}`);
+                        const quantityChange = action === 'increase' ? 1 : -1;
+                        quantityInput.value = parseInt(quantityInput.value) + quantityChange;
+                        await updateTotalPrice();
+                    }
+
+                    errorMsg.textContent = "";
+                } else {
+                    console.error('Failed to update quantity');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function increaseQuantity(userId, productId) {
+            updateQuantity(userId, productId, 'increase');
+        }
+
+        function decreaseQuantity(userId, productId) {
+            updateQuantity(userId, productId, 'decrease');
+        }
+
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            document.querySelectorAll('.cart-item').forEach(item => {
+                const price = parseFloat(item.querySelector('.product-price').innerText);
+                const quantity = parseInt(item.querySelector('.item-quantity').value);
+                totalPrice += price * quantity;
+            });
+            document.getElementById('total-price').innerText = `Общая цена всех товаров: ${totalPrice.toFixed(2)} рублей`;
+        }
+
+    </script>
+{% endblock %}
