@@ -3,11 +3,11 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: iwillsew_database
+    container_name: iwillsew_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: iwillsew_db
+      POSTGRES_USER: baker
+      POSTGRES_PASSWORD: MEg2U5wcih9AjCseeIpiJ9JNBByAFsYU
+      POSTGRES_DB: iwillsew_database
     ports:
       - "5432:5432"
 
@@ -19,7 +19,5 @@ services:
     container_name: iwillsew_application
     depends_on:
       - db
-    environment:
-      DATABASE_URL: "postgresql+asyncpg://postgres:postgres@db:5432/iwillsew_db"
     command: ["/iwillsew/docker/app.sh"]
     
