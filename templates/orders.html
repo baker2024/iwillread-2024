@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="display-4">Мои заказы</h1>
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {% if orders %}
+                    <ul class="list-group">
+                        {% for order in orders %}
+                            <li class="list-group-item">
+                                <h5>Заказ #{{ order.Order.id }}</h5>
+                                <p>Дата создания: {{ order.Order.created_at.strftime("%d.%m.%Y, %H:%M:%S") }}</p>
+                                <p>Статус: {{ order.Order.status }}</p>
+                                <h6>Список товаров:</h6>
+                                <ul>
+                                    {% for item in order.Order.order_items %}
+                                        <img src="/{{ item.product.image }}" alt="{{ item.product_name }}" style="max-height: 100px;">
+                                        <li><a href="/product?product_id={{ item.product_id }}">{{ item.product.name }} - {{item.price}} РУБ - {{item.quantity}} шт.</a></li>
+                                    {% endfor %}
+                                </ul>
+                                <p>Общая сумма заказа: {{ order.Order.total_price }} руб.</p>
+                                {% if order.Order.status == "Новый" %}
+                                    <a class="btn btn-danger" onclick="deleteOrder({{ order.Order.id }})">Отменить заказ</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>У вас пока нет заказов.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        async function deleteOrder(orderID) {
+            const url = `http://localhost:9000/orders/del/${orderID}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: {"order_id": orderID},
+                });
+                if (response.status === 200) {
+                    window.location.href = "/my-orders";
+                }
+                } catch (error) {
+                    console.error('Ошибка:', error);
+                }
+
+            }
+    </script>
+{% endblock %}

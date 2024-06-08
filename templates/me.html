@@ -44,6 +44,7 @@
             {% if user.is_superuser %}
             <a class="btn btn-primary mt-3" role="button" href="/admin">Админ-панель</a>
             {% endif %}
+            <a class="btn btn-primary mt-3" role="button" href="/my-orders">Мои заказы</a>
             <button class="btn btn-primary mt-3" onclick="logoutUser()">Выйти</button>
         </div>
     </div>
@@ -51,7 +52,7 @@
 
     <script>
         async function logoutUser() {
-            const url = "http://127.0.0.1:8000/auth/logout";
+            const url = "http://localhost:9000/auth/logout";
 
             await fetch(url, {
                 method: 'POST',

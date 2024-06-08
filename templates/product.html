@@ -9,7 +9,11 @@
                     <img src="{{ product.image }}" class="card-img-top fixed-size" alt="Product Image">
                     <div class="card-body">
                         <h1 class="card-title">{{ product.name }}</h1>
-                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text">Описание: {{ product.description }} см</p>
+                        <p class="card-text">Ширина: {{ product.width }} см</p>
+                        <p class="card-text">Плотность: {{ product.density }} г/мп</p>
+                        <p class="card-text">Состав: {{ product.composition }}</p>
+                        <p class="card-text">Страна: {{ product.country }}</p>
                         <p class="card-text"><strong>Цена:</strong> {{ product.price }} рублей</p>
                         {% if user %}
                         <button class="btn btn-primary" onclick='addToCart({{ user.id }}, {{ product.id }});'>Добавить в корзину</button>
@@ -27,7 +31,7 @@
     <script>
         async function addToCart(user, product) {
             console.log(user, product);
-            const url = `http://127.0.0.1:8000/cart/add`;
+            const url = `http://localhost:9000/cart/add`;
             const formData = {
                 user_id: user,
                 product_id: product,

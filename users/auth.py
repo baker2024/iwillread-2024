@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 from pydantic import EmailStr
 
 from core import config
-from exceptions import  IncorrectLoginOrPasswordException
+from exceptions import IncorrectLoginOrPasswordException
 from users.dao import UserDAO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -21,11 +21,9 @@ def verify_password(plain_password, hashed_password) -> bool:
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=30)
+    expire = datetime.now() + timedelta(minutes=600)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(
-        to_encode, config.SECRET_KEY, config.ALGORITHM
-    )
+    encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, config.ALGORITHM)
     return encoded_jwt
 
 

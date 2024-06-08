@@ -20,9 +20,7 @@ def get_token(request: Request):
 async def get_current_user(token: str = Depends(get_token)):
     if token:
         try:
-            payload = jwt.decode(
-                token, config.SECRET_KEY, config.ALGORITHM
-            )
+            payload = jwt.decode(token, config.SECRET_KEY, config.ALGORITHM)
         except ExpiredSignatureError:
             return False
         except JWTError:

@@ -11,7 +11,7 @@
                                <div class="card-body d-flex align-items-center">
                                     <img src="{{ item.CartItem.product.image }}" class="card-img-start me-3" alt="{{ item.CartItem.product.name }}" style="max-width: 100px;">
                                     <div>
-                                        <h5 class="card-title">{{ item.CartItem.product.name }}</h5>
+                                        <h5 class="card-title"><a href="/product?product_id={{ item.CartItem.product_id }}">{{ item.CartItem.product.name }}</a></h5>
                                         <p class="card-text item-price"><strong>Цена:</strong> <span class="product-price">{{ item.CartItem.product.price }}</span> РУБ</p>
                                         <div class="d-flex align-items-center">
                                             <button class="btn btn-outline-secondary me-2" onclick="decreaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">-</button>
@@ -19,7 +19,7 @@
                                             <button class="btn btn-outline-secondary ms-2" onclick="increaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">+</button>
                                             <button class="btn btn-outline-secondary ms-2" onclick="deleteProduct({{ user.id }}, {{ item.CartItem.product_id }})">Удалить</button>
                                         </div>
-                                        <div id="errorMsg"></div>
+                                        <div id="errorMsg-{{ item.CartItem.product_id }}"></div>
                                     </div>
                                 </div>
                             </div>
@@ -27,13 +27,18 @@
                     {% else %}
                     <h3 class="mb-4">Ваша корзина пуста</h3>
                     {% endif %}
+                    
                 </div>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Итоговая сумма</h5>
-                            <p class="card-text" id="total-price">Общая цена всех товаров: {{ total_price }} РУБ</p>
-                            <a href="#" class="btn btn-primary">Оформить заказ</a>
+                            <p class="card-text">Общая цена всех товаров:<span id="total-price" class="fs-4"> {{ total_price }}</span>  РУБ</p>
+                            {% if items %}
+                                <label for="password">Введите пароль для формирования заказа</label><input type="password" class="form-control mt-3" name="password" id="password" required>
+                                <div id="errorMessage" style="color: red"></div>
+                                <a href="#" class="btn btn-primary mt-3" onclick="createOrder('{{ user_login }}', {{ user.id }}, {{ items_json }})">Сформировать заказ</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -42,7 +47,7 @@
     </div>
     <script>
         async function deleteProduct(user, product) {
-            const url = `http://127.0.0.1:8000/cart/delete`;
+            const url = `localhost:9000/cart/delete`;
             const formData = {
                 user_id: user,
                 product_id: product
@@ -82,7 +87,7 @@
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    const errorMsg = document.getElementById("errorMsg");
+                    const errorMsg = document.getElementById(`errorMsg-${productId}`);
                     if (data.message === "Такого количества нет в наличии") {
                         errorMsg.textContent = "Большего количества нет в наличии";
                         return
@@ -117,8 +122,53 @@
                 const quantity = parseInt(item.querySelector('.item-quantity').value);
                 totalPrice += price * quantity;
             });
-            document.getElementById('total-price').innerText = `Общая цена всех товаров: ${totalPrice.toFixed(2)} рублей`;
+            document.getElementById('total-price').innerText = `${totalPrice.toFixed(2)}`;
         }
 
+        async function createOrder(userLogin, userID, items) {
+            const url = "http://localhost:9000/auth/login";
+            const formData = {
+                login: userLogin,
+                password: document.getElementById("password").value
+            };
+            const errorMsg = document.getElementById("errorMessage");
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData),
+                });
+                if (response.status === 200) {
+                    const url = `/orders`;
+                    document.getElementById('total-price').innerText
+                    const formData = {
+                        user_id: userID,
+                        items: items,
+                        total_price: document.getElementById('total-price').innerText
+                    };
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(formData)
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            window.location.href = `/my-orders`;
+                        } else {
+                            console.error('Failed to create order');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                } else {
+                    errorMsg.textContent = "Неверный логин или пароль";
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
     </script>
 {% endblock %}

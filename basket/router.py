@@ -23,30 +23,32 @@ async def view_cart(user_id: int):
 
 
 @router.post("/cart/add")
-async def add_to_cart(data: SCartItem):
-    await CartDAO.add_to_cart(data.user_id, data.product_id, data.quantity)
-    return {"message": "Product added to cart"}
+async def add_to_cart(data: SCartItem, user: User = Depends(get_current_user)):
+    if user:
+        await CartDAO.add_to_cart(data.user_id, data.product_id, data.quantity)
 
 
 @router.put("/cart/quantity")
-async def cart_quantity(data: SCartQuantity):
-    if data.method == 'decrease_quantity':
-        await CartDAO.reduce_from_cart_quantity(data.user_id, data.product_id, data.quantity)
-        return {"message": "Cart item updated successfully"}
-    elif data.method == 'increase_quantity':
-        product = await ProductDAO.find_product_by_id(data.product_id)
-        cart_item = await CartDAO.get_cart_item(data.user_id, data.product_id)
-        if product.count > cart_item.CartItem.quantity:
-            await CartDAO.add_to_cart_quantity(data.user_id, data.product_id, data.quantity)
+async def cart_quantity(data: SCartQuantity, user: User = Depends(get_current_user)):
+    if user:
+        if data.method == 'decrease_quantity':
+            await CartDAO.reduce_from_cart_quantity(data.user_id, data.product_id, data.quantity)
             return {"message": "Cart item updated successfully"}
-        else:
-            return {"message": "Такого количества нет в наличии"}
+        elif data.method == 'increase_quantity':
+            product = await ProductDAO.find_product_by_id(data.product_id)
+            cart_item = await CartDAO.get_cart_item(data.user_id, data.product_id)
+            if product.count > cart_item.CartItem.quantity:
+                await CartDAO.add_to_cart_quantity(data.user_id, data.product_id, data.quantity)
+                return {"message": "Cart item updated successfully"}
+            else:
+                return {"message": "Такого количества нет в наличии"}
 
 
 @router.delete("/cart/delete")
-async def delete_cart_item(data: SCartDelete):
-    await CartDAO.delete_cart_item(data.user_id, data.product_id)
-    return {"message": "Cart item deleted successfully"}
+async def delete_cart_item(data: SCartDelete, user: User = Depends(get_current_user)):
+    if user:
+        await CartDAO.delete_cart_item(data.user_id, data.product_id)
+        return {"message": "Cart item deleted successfully"}
 
 
 @router.get("/basket")
@@ -61,7 +63,17 @@ async def get_basket_page(request: Request, user: User = Depends(get_current_use
                 total_price += item.CartItem.product.price * item.CartItem.quantity
             else:
                 await CartDAO.delete_cart_item(user.id, item.CartItem.product_id)
+
+    items_json = json.dumps([
+        {
+            'id': item.CartItem.id,
+            'user_id': item.CartItem.user_id,
+            'product_id': item.CartItem.product_id,
+            'quantity': item.CartItem.quantity,
+        }
+        for item in items
+    ])
     return templates.TemplateResponse("basket.html",
-                                      {"request": request, "user": user, "items": items, "total_price": total_price})
+                                      {"request": request, "user": user, "items": items, "total_price": total_price, "items_json": items_json, "user_login": user.login})
 
 
