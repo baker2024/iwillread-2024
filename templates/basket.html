@@ -47,7 +47,7 @@
     </div>
     <script>
         async function deleteProduct(user, product) {
-            const url = `http://localhost:9000/cart/delete`;
+            const url = `https://iwillsew.onrender.com/cart/delete`;
             const formData = {
                 user_id: user,
                 product_id: product
@@ -126,7 +126,7 @@
         }
 
         async function createOrder(userLogin, userID, items) {
-            const url = "http://localhost:9000/auth/login";
+            const url = "https://iwillsew.onrender.com/auth/login";
             const formData = {
                 login: userLogin,
                 password: document.getElementById("password").value
