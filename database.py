@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
-DB_HOST = "postgres://baker:MEg2U5wcih9AjCseeIpiJ9JNBByAFsYU@dpg-cpi133i1hbls73bad6r0-a.frankfurt-postgres.render.com/iwillsew_database"
+DB_HOST = "dpg-cpi133i1hbls73bad6r0-a.frankfurt-postgres.render.com"
 DB_PORT = 5432
 DB_USER = "baker"
 DB_PASSWORD = "MEg2U5wcih9AjCseeIpiJ9JNBByAFsYU"
