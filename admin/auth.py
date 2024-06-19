@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import HTTPException
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request

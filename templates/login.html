@@ -25,8 +25,7 @@
 
     <script>
         async function loginUser() {
-
-            const url = "https://iwillsew.onrender.com/auth/login";
+            const url = "http://127.0.0.1:8000/auth/login";
             const formData = {
                 login: document.getElementById("login").value,
                 password: document.getElementById("password").value
@@ -38,15 +37,22 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(formData),
                 });
+
+                const data = await response.json();
+                console.log(response.status, data);
+
                 if (response.status === 200) {
-                    window.location.href = "/";
+                    if (data.is_superuser) {
+                        window.location.href = "/admin/";
+                    } else {
+                        window.location.href = "/";
+                    }
                 } else {
                     errorMsg.textContent = "Неверный логин или пароль";
-                    }
-                } catch (error) {
-                    console.error('Ошибка:', error);
                 }
-
+            } catch (error) {
+                console.error('Ошибка:', error);
             }
+        }
     </script>
 {% endblock %}

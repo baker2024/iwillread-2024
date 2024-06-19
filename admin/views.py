@@ -65,20 +65,31 @@ class CategoriesAdmin(ModelView, model=Category):
 
 
 class OrdersAdmin(ModelView, model=Order):
-    column_list = [Order.id, Order.user, Order.total_price, Order.status]
+    column_list = [
+        Order.id,
+        Order.user,
+        Order.total_price,
+        Order.created_at,
+        Order.status,
+    ]
     column_details_list = [
         Order.id,
         Order.user,
         Order.order_items,
         Order.total_price,
         Order.status,
+        Order.created_at,
+        Order.decline_desc,
     ]
     column_labels = {
         Order.id: "ID",
         Order.user_id: "user_id",
         Order.total_price: "Сумма",
         Order.status: "Статус",
+        Order.created_at: "Дата и время",
+        Order.decline_desc: "Причина отмены",
     }
+
     name = "Заказ"
     name_plural = "Заказы"
     icon = "fa-solid fa-dollar-sign"

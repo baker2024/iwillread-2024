@@ -14,9 +14,7 @@ class CartDAO(BaseDAO):
     async def get_cart(cls, user_id: int):
         async with async_session() as session:
             query = (
-                select(
-                    CartItem
-                )
+                select(CartItem)
                 .options(selectinload(CartItem.product))
                 .where(CartItem.user_id == user_id)
             )
@@ -30,53 +28,115 @@ class CartDAO(BaseDAO):
             if existing_item:
                 await cls.add_to_cart_quantity(user_id, product_id, quantity)
             else:
-                new_item = CartItem(user_id=user_id, product_id=product_id, quantity=quantity)
+                new_item = CartItem(
+                    user_id=user_id, product_id=product_id, quantity=quantity
+                )
                 session.add(new_item)
             await session.commit()
 
     @classmethod
     async def update_cart_item(cls, user_id: int, product_id: int, quantity: int):
         async with async_session() as session:
-            query = select(CartItem.__table__.columns).filter_by(user_id=user_id, product_id=product_id)
+            query = select(CartItem.__table__.columns).filter_by(
+                user_id=user_id, product_id=product_id
+            )
             existing_item = await session.execute(query)
             cart_item = existing_item.mappings().one()
             if cart_item:
                 updated_values = {CartItem.quantity: quantity}
-                await session.execute(update(CartItem).where(
-                    and_(CartItem.user_id == user_id, CartItem.product_id == product_id)).values(updated_values)
-                                      )
+                await session.execute(
+                    update(CartItem)
+                    .where(
+                        and_(
+                            CartItem.user_id == user_id,
+                            CartItem.product_id == product_id,
+                        )
+                    )
+                    .values(updated_values)
+                )
                 await session.commit()
                 return cart_item
 
         return None
 
     @classmethod
-    async def add_to_cart_quantity(cls, user_id: int, product_id: int, quantity_to_add: int):
+    async def add_to_cart_quantity(
+        cls, user_id: int, product_id: int, quantity_to_add: int
+    ):
         async with async_session() as session:
-            query = select(CartItem.__table__.columns).filter_by(user_id=user_id, product_id=product_id)
+            query = select(CartItem.__table__.columns).filter_by(
+                user_id=user_id, product_id=product_id
+            )
             existing_item = await session.execute(query)
             cart_item = existing_item.mappings().one()
             if cart_item:
-                updated_values = {CartItem.quantity: cart_item.quantity + quantity_to_add}
-                await session.execute(update(CartItem).where(
-                    and_(CartItem.user_id == user_id, CartItem.product_id == product_id)).values(updated_values)
-                                      )
+                updated_values = {
+                    CartItem.quantity: cart_item.quantity + quantity_to_add
+                }
+                await session.execute(
+                    update(CartItem)
+                    .where(
+                        and_(
+                            CartItem.user_id == user_id,
+                            CartItem.product_id == product_id,
+                        )
+                    )
+                    .values(updated_values)
+                )
                 await session.commit()
                 return cart_item
 
         return None
 
     @classmethod
-    async def reduce_from_cart_quantity(cls, user_id: int, product_id: int, quantity_to_reduce: int):
+    async def update_cart_quantity(cls, user_id: int, product_id: int, quantity: int):
         async with async_session() as session:
-            query = select(CartItem.__table__.columns).filter_by(user_id=user_id, product_id=product_id)
+            query = select(CartItem.__table__.columns).filter_by(
+                user_id=user_id, product_id=product_id
+            )
+            existing_item = await session.execute(query)
+            cart_item = existing_item.mappings().one()
+            if cart_item:
+                updated_values = {CartItem.quantity: quantity}
+                await session.execute(
+                    update(CartItem)
+                    .where(
+                        and_(
+                            CartItem.user_id == user_id,
+                            CartItem.product_id == product_id,
+                        )
+                    )
+                    .values(updated_values)
+                )
+                await session.commit()
+                return cart_item
+
+        return None
+
+    @classmethod
+    async def reduce_from_cart_quantity(
+        cls, user_id: int, product_id: int, quantity_to_reduce: int
+    ):
+        async with async_session() as session:
+            query = select(CartItem.__table__.columns).filter_by(
+                user_id=user_id, product_id=product_id
+            )
             existing_item = await session.execute(query)
             cart_item = existing_item.mappings().one()
             if cart_item and (cart_item.quantity - quantity_to_reduce >= 0):
-                updated_values = {CartItem.quantity: cart_item.quantity - quantity_to_reduce}
-                await session.execute(update(CartItem).where(
-                    and_(CartItem.user_id == user_id, CartItem.product_id == product_id)).values(updated_values)
-                                      )
+                updated_values = {
+                    CartItem.quantity: cart_item.quantity - quantity_to_reduce
+                }
+                await session.execute(
+                    update(CartItem)
+                    .where(
+                        and_(
+                            CartItem.user_id == user_id,
+                            CartItem.product_id == product_id,
+                        )
+                    )
+                    .values(updated_values)
+                )
                 await session.commit()
                 return cart_item
 
@@ -87,7 +147,9 @@ class CartDAO(BaseDAO):
         async with async_session() as session:
             existing_item = await cls.get_cart_item(user_id, product_id)
             if existing_item:
-                query = delete(cls.model).where(cls.model.user_id == user_id, cls.model.product_id == product_id)
+                query = delete(cls.model).where(
+                    cls.model.user_id == user_id, cls.model.product_id == product_id
+                )
                 await session.execute(query)
                 await session.commit()
 
@@ -98,4 +160,9 @@ class CartDAO(BaseDAO):
             result = await session.execute(item)
             return result.first()
 
-
+    @classmethod
+    async def delete_cart(cls, user_id: int):
+        async with async_session() as session:
+            query = delete(cls.model).where(cls.model.user_id == user_id)
+            await session.execute(query)
+            await session.commit()

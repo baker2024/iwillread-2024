@@ -31,14 +31,26 @@ async def add_to_cart(data: SCartItem, user: User = Depends(get_current_user)):
 @router.put("/cart/quantity")
 async def cart_quantity(data: SCartQuantity, user: User = Depends(get_current_user)):
     if user:
-        if data.method == 'decrease_quantity':
-            await CartDAO.reduce_from_cart_quantity(data.user_id, data.product_id, data.quantity)
+        product = await ProductDAO.find_product_by_id(data.product_id)
+        if data.method == "decrease_quantity":
+            await CartDAO.reduce_from_cart_quantity(
+                data.user_id, data.product_id, data.quantity
+            )
             return {"message": "Cart item updated successfully"}
-        elif data.method == 'increase_quantity':
-            product = await ProductDAO.find_product_by_id(data.product_id)
+        elif data.method == "increase_quantity":
             cart_item = await CartDAO.get_cart_item(data.user_id, data.product_id)
             if product.count > cart_item.CartItem.quantity:
-                await CartDAO.add_to_cart_quantity(data.user_id, data.product_id, data.quantity)
+                await CartDAO.add_to_cart_quantity(
+                    data.user_id, data.product_id, data.quantity
+                )
+                return {"message": "Cart item updated successfully"}
+            else:
+                return {"message": "Такого количества нет в наличии"}
+        elif data.method == "update_quantity":
+            if product.count >= data.quantity:
+                await CartDAO.update_cart_quantity(
+                    data.user_id, data.product_id, data.quantity
+                )
                 return {"message": "Cart item updated successfully"}
             else:
                 return {"message": "Такого количества нет в наличии"}
@@ -64,16 +76,25 @@ async def get_basket_page(request: Request, user: User = Depends(get_current_use
             else:
                 await CartDAO.delete_cart_item(user.id, item.CartItem.product_id)
 
-    items_json = json.dumps([
+    items_json = json.dumps(
+        [
+            {
+                "id": item.CartItem.id,
+                "user_id": item.CartItem.user_id,
+                "product_id": item.CartItem.product_id,
+                "quantity": item.CartItem.quantity,
+            }
+            for item in items
+        ]
+    )
+    return templates.TemplateResponse(
+        "basket.html",
         {
-            'id': item.CartItem.id,
-            'user_id': item.CartItem.user_id,
-            'product_id': item.CartItem.product_id,
-            'quantity': item.CartItem.quantity,
-        }
-        for item in items
-    ])
-    return templates.TemplateResponse("basket.html",
-                                      {"request": request, "user": user, "items": items, "total_price": total_price, "items_json": items_json, "user_login": user.login})
-
-
+            "request": request,
+            "user": user,
+            "items": items,
+            "total_price": total_price,
+            "items_json": items_json,
+            "user_login": user.login,
+        },
+    )

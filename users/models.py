@@ -23,4 +23,4 @@ class User(Base):
     orders = relationship("Order", back_populates="user")
 
     def __str__(self):
-        return f"EMAIL: {self.email}"
+        return f"ФИО: {self.surname} {self.name} {self.patronymic}"

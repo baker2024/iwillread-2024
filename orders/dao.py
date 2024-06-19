@@ -1,7 +1,6 @@
 from sqlalchemy import select, desc, delete, update, and_
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
-from basket.models import CartItem
 from dao.base import BaseDAO
 from orders.models import Order, OrderItem
 from database import async_session
@@ -63,7 +62,9 @@ class OrderDAO(BaseDAO):
             return order_items
 
     @classmethod
-    async def update_order_status(cls, user_id: int, order_id: int, new_status: str):
+    async def update_order_status(
+        cls, user_id: int, order_id: int, new_status: int, decline_desc: str = None
+    ):
         async with async_session() as session:
             async with session.begin():
                 result = await session.execute(
@@ -74,10 +75,14 @@ class OrderDAO(BaseDAO):
                 order = result.scalar_one_or_none()
 
                 if order:
+                    update_values = {"status_id": new_status}
+                    if decline_desc:
+                        update_values["decline_desc"] = decline_desc
+
                     await session.execute(
                         update(Order)
                         .where(and_(Order.id == order_id, Order.user_id == user_id))
-                        .values(status=new_status)
+                        .values(**update_values)
                     )
                     await session.commit()
                     return {"message": "Order status updated successfully"}

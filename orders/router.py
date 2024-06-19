@@ -32,6 +32,7 @@ async def create_order(
             item["price"] = product.price
 
         result = await OrderDAO.create_order(user.id, total_price, items)
+        await CartDAO.delete_cart(user.id)
 
         if not items:
             raise HTTPException(
@@ -77,7 +78,7 @@ async def get_order(order_id: int, user: User = Depends(get_current_user)):
 
 @router.put("/orders/{order_id}/status")
 async def update_order_status(
-    order_id: int, new_status: str, user: User = Depends(get_current_user)
+    order_id: int, new_status: int, user: User = Depends(get_current_user)
 ):
     if user:
         await OrderDAO.update_order_status(user.id, order_id, new_status)
@@ -87,5 +88,7 @@ async def update_order_status(
 @router.put("/orders/del/{order_id}")
 async def delete_order(order_id: int, user: User = Depends(get_current_user)):
     if user:
-        await OrderDAO.update_order_status(user.id, order_id, "Отменен пользователем.")
+        await OrderDAO.update_order_status(
+            user.id, order_id, new_status=5, decline_desc="Удалён пользователем."
+        )
         return {"message": "Order status updated successfully"}

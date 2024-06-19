@@ -25,8 +25,8 @@
                                     {% endfor %}
                                 </ul>
                                 <p>Общая сумма заказа: {{ order.Order.total_price }} руб.</p>
-                                {% if order.Order.status == "Новый" %}
-                                    <a class="btn btn-danger" onclick="deleteOrder({{ order.Order.id }})">Отменить заказ</a>
+                                {% if order.Order.status_id == 1 %}
+                                    <a class="btn btn-danger" onclick="deleteOrder({{ order.Order.id }})">Удалить заказ</a>
                                 {% endif %}
                             </li>
                         {% endfor %}
@@ -39,7 +39,7 @@
     </div>
     <script>
         async function deleteOrder(orderID) {
-            const url = `https://iwillsew.onrender.com/orders/del/${orderID}`;
+            const url = `http://127.0.0.1:8000/orders/del/${orderID}`;
             try {
                 const response = await fetch(url, {
                     method: 'PUT',

@@ -15,7 +15,7 @@
                                         <p class="card-text item-price"><strong>Цена:</strong> <span class="product-price">{{ item.CartItem.product.price }}</span> РУБ</p>
                                         <div class="d-flex align-items-center">
                                             <button class="btn btn-outline-secondary me-2" onclick="decreaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">-</button>
-                                            <input type="text" class="form-control text-center item-quantity" id="quantity-{{ item.CartItem.product_id }}" value="{{ item.CartItem.quantity }}" readonly>
+                                            <input type="text" class="form-control text-center item-quantity" id="quantity-{{ item.CartItem.product_id }}" value="{{ item.CartItem.quantity }}" onchange="updateQuantityInput({{ user.id }}, {{ item.CartItem.product_id }})">
                                             <button class="btn btn-outline-secondary ms-2" onclick="increaseQuantity({{ user.id }}, {{ item.CartItem.product_id }})">+</button>
                                             <button class="btn btn-outline-secondary ms-2" onclick="deleteProduct({{ user.id }}, {{ item.CartItem.product_id }})">Удалить</button>
                                         </div>
@@ -47,7 +47,7 @@
     </div>
     <script>
         async function deleteProduct(user, product) {
-            const url = `https://iwillsew.onrender.com/cart/delete`;
+            const url = `http://127.0.0.1:8000/cart/delete`;
             const formData = {
                 user_id: user,
                 product_id: product
@@ -108,10 +108,14 @@
         }
 
         function increaseQuantity(userId, productId) {
+            const errorMsg = document.getElementById(`errorMsg-${productId}`);
+            errorMsg.textContent = "";
             updateQuantity(userId, productId, 'increase');
         }
 
         function decreaseQuantity(userId, productId) {
+            const errorMsg = document.getElementById(`errorMsg-${productId}`);
+            errorMsg.textContent = "";
             updateQuantity(userId, productId, 'decrease');
         }
 
@@ -126,7 +130,7 @@
         }
 
         async function createOrder(userLogin, userID, items) {
-            const url = "https://iwillsew.onrender.com/auth/login";
+            const url = "http://127.0.0.1:8000/auth/login";
             const formData = {
                 login: userLogin,
                 password: document.getElementById("password").value
@@ -170,5 +174,39 @@
                 console.error('Ошибка:', error);
             }
         }
+
+        async function updateQuantityInput(userId, productId) {
+            const errorMsg = document.getElementById(`errorMsg-${productId}`);
+            errorMsg.textContent = "";
+            const url = `/cart/quantity`;
+            const quantityInput = document.querySelector(`#quantity-${productId}`);
+            const newQuantity = parseInt(quantityInput.value);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId, product_id: productId, quantity: newQuantity, method: 'update_quantity' }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data.message);
+                    if (data.message === "Такого количества нет в наличии") {
+                        const errorMsg = document.getElementById(`errorMsg-${productId}`);
+                        errorMsg.textContent = "Большего количества нет в наличии";
+                    } else {
+                        await updateTotalPrice();
+                    }
+                } else {
+                    console.error('Failed to update quantity');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
     </script>
 {% endblock %}

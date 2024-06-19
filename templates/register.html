@@ -24,7 +24,7 @@
                 <label for="email">Почта</label>
                 <input type="email" class="form-control" name="email" id="email" required>
                 <label for="phone">Номер телефона</label>
-                <input type="text" class="form-control" name="phone" id="phone" required>
+                <input type="tel" class="form-control" name="phone" id="phone" required>
                 <label for="password">Пароль</label>
                 <input type="password" class="form-control" name="password" id="password" required>
                 <label for="password_repeat">Повторите пароль</label>
@@ -39,54 +39,104 @@
 </div>
 
 <script>
-    async function registerUser() {
-        const url = "https://iwillsew.onrender.com/auth/register";
-        const formData = {
-            name: document.getElementById("firstname").value,
-            surname: document.getElementById("lastname").value,
-            patronymic: document.getElementById("patronymic").value,
-            login: document.getElementById("user_login").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
-            password: document.getElementById("password").value
-        };
-        const errorMsg = document.getElementById("errorMessage");
-        const password = document.getElementById("password").value;
-        const password_repeat = document.getElementById("password_repeat").value;
+    const errorTranslations = {
+    "String should match pattern '^[А-Яа-яЁё\\s-]+$'": "обязательное поле, разрешенные символы (кириллица, пробел и тире)",
+    "String should match pattern '^[А-Яа-яЁё\\s-]*$'": "обязательное поле, разрешенные символы (кириллица, пробел и тире)",
+    "String should have at least 6 characters": "Строка должна содержать не менее 6 символов",
+    "Field required": "Поле обязательно для заполнения",
+    "String should match pattern '^[a-zA-Z0-9-]+$'": "обязательное и уникальное поле, разрешенные символы (латиница, цифры и тире)",
+    "value is not a valid email address: The email address is not valid. It must have exactly one @-sign.": "неверный формат почты",
+    "String should match pattern '^\\+?[1-9]\\d{1,14}$'": "неверный формат номера телефона",
+    "Пользователь уже существует с таким же: Email": "Пользователь уже существует с таким же: Почта",
+    "Пользователь уже существует с таким же: Логин": "Пользователь уже существует с таким же: Логин",
+    "Пользователь уже существует с таким же: Номер телефона": "Пользователь уже существует с таким же: Номер телефона"
+};
 
-        for (const [key, value] of Object.entries(formData)) {
-            if (!value && key !== "patronymic") {
-                errorMsg.textContent = `Поле "${key}" не может быть пустым.`;
-                return;
-            }
-        }
+function translateFieldName(fieldName) {
+    const fieldTranslations = {
+        "name": "Имя",
+        "surname": "Фамилия",
+        "patronymic": "Отчество",
+        "login": "Логин",
+        "email": "Почта",
+        "phone": "Номер телефона",
+        "password": "Пароль",
+        "password_repeat": "Повторите пароль"
+    };
+    return fieldTranslations[fieldName] || fieldName;
+}
 
-        // Check for password match
-        if (password !== password_repeat) {
-            errorMsg.textContent = "Пароли не совпадают.";
-            return;
-        }
+function displayErrors(errors) {
+    const errorMsg = document.getElementById("errorMessage");
+    let errorMessages = "";
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (response.status === 201) {
-                window.location.href = "/login";
+    if (Array.isArray(errors)) {
+        errors.forEach(error => {
+            if (error.loc) {
+                // Validation error
+                const field = error.loc[1];
+                const message = error.msg;
+                const translatedMessage = errorTranslations[message] || message;
+                errorMessages += `Поле "${translateFieldName(field)}": ${translatedMessage}<br>`;
             } else {
-                const errorData = await response.json();
-                errorMsg.textContent = errorData.detail;
+                // Custom error
+                const message = error.detail;
+                const translatedMessage = errorTranslations[message] || message;
+                errorMessages += `${translatedMessage}<br>`;
             }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            errorMsg.textContent = "Произошла ошибка при регистрации. Попробуйте снова позже.";
-        }
+        });
+    } else if (typeof errors === 'string') {
+        // Handle single custom error message
+        const translatedMessage = errorTranslations[errors] || errors;
+        errorMessages += `${translatedMessage}<br>`;
     }
+
+    errorMsg.innerHTML = errorMessages;
+}
+
+
+async function registerUser() {
+    const url = "http://127.0.0.1:8000/auth/register";
+    const formData = {
+        name: document.getElementById("firstname").value,
+        surname: document.getElementById("lastname").value,
+        patronymic: document.getElementById("patronymic").value,
+        login: document.getElementById("user_login").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        password: document.getElementById("password").value,
+        password_repeat: document.getElementById("password_repeat").value
+    };
+    const errorMsg = document.getElementById("errorMessage");
+    errorMsg.textContent = "";
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.status === 201) {
+            window.location.href = "/login";
+        } else {
+            const errorData = await response.json();
+            if (errorData.detail) {
+                if (Array.isArray(errorData.detail)) {
+                    displayErrors(errorData.detail);
+                } else {
+                    displayErrors(errorData.detail);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        errorMsg.textContent = "Произошла ошибка при регистрации. Попробуйте снова позже.";
+    }
+}
+
 </script>
 {% endblock %}

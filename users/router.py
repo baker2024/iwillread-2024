@@ -1,3 +1,5 @@
+import aiohttp
+
 from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -25,35 +27,61 @@ async def register_user(user_data: SUserCreate):
     existing_users = {
         "Email": existing_user_email,
         "Логин": existing_user_login,
-        "Номер телефона": existing_user_phone
+        "Номер телефона": existing_user_phone,
     }
 
     for field, existing_user in existing_users.items():
         if existing_user:
-            raise HTTPException(409, detail=f"Пользователь уже существует с таким же: {field}")
+            raise HTTPException(
+                409, detail=f"Пользователь уже существует с таким же: {field}"
+            )
+
+    if user_data.password != user_data.password_repeat:
+        raise HTTPException(409, detail="Пароли не совпадают")
 
     hashed_password = get_password_hash(user_data.password)
-    await UserDAO.add(name=user_data.name,
-                      surname=user_data.surname,
-                      patronymic=user_data.patronymic,
-                      login=user_data.login,
-                      phone=user_data.phone,
-                      email=user_data.email,
-                      hashed_password=hashed_password)
+    await UserDAO.add(
+        name=user_data.name,
+        surname=user_data.surname,
+        patronymic=user_data.patronymic,
+        login=user_data.login,
+        phone=user_data.phone,
+        email=user_data.email,
+        hashed_password=hashed_password,
+    )
     return {"ok": True}
 
 
 @router.post("/login")
 async def login_user(response: Response, user_data: SUserAuth):
+    is_superuser = await UserDAO.check_superuser(user_data.login)
+    if is_superuser:
+        async with aiohttp.ClientSession() as session:
+            data = {"username": user_data.login, "password": user_data.password}
+            async with session.post(
+                "http://127.0.0.1:8000/admin/login", data=data, allow_redirects=False
+            ) as result:
+                if result.status == 302:
+                    session_admin_key = result.cookies.get("session")
+                    if session_admin_key:
+                        response.set_cookie(
+                            "session",
+                            session_admin_key.value,
+                            httponly=True,
+                        )
+
     user = await authenticate_user(user_data.login, user_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid login or password")
+
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("access_token", access_token, httponly=True)
-    return {"access_token": access_token}
+    if is_superuser:
+        return {"access_token": access_token, "is_superuser": True}
+    return {"access_token": access_token, "is_superuser": False}
 
 
 @router.post("/logout")
 async def logout_user(response: Response):
     response.delete_cookie("access_token")
-
-
-
+    response.delete_cookie("session")
