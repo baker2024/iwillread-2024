@@ -59,7 +59,9 @@ async def login_user(response: Response, user_data: SUserAuth):
         async with aiohttp.ClientSession() as session:
             data = {"username": user_data.login, "password": user_data.password}
             async with session.post(
-                "http://127.0.0.1:8000/admin/login", data=data, allow_redirects=False
+                "https://iwillsew.onrender.com/admin/login",
+                data=data,
+                allow_redirects=False,
             ) as result:
                 if result.status == 302:
                     session_admin_key = result.cookies.get("session")
