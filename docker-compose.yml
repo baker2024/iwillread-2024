@@ -3,11 +3,11 @@ version: '3.8'
 services:
   db:
     image: postgres:15
-    container_name: iwillsew_db
+    container_name: iwillread_db
     environment:
       POSTGRES_USER: baker
-      POSTGRES_PASSWORD: MEg2U5wcih9AjCseeIpiJ9JNBByAFsYU
-      POSTGRES_DB: iwillsew_database
+      POSTGRES_PASSWORD: UksBaJ5UH2pwL2bi9zfhVAiWoYkJkBom
+      POSTGRES_DB: iwillread
     ports:
       - "5432:5432"
 
@@ -16,8 +16,8 @@ services:
       context: .
     ports:
       - 9000:8000
-    container_name: iwillsew_application
+    container_name: iwillread_application
     depends_on:
       - db
-    command: ["/iwillsew/docker/app.sh"]
+    command: ["/iwillread/docker/app.sh"]
     
