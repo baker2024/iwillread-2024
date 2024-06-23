@@ -35,9 +35,13 @@
                             <h5 class="card-title">Итоговая сумма</h5>
                             <p class="card-text">Общая цена всех товаров:<span id="total-price" class="fs-4"> {{ total_price }}</span>  РУБ</p>
                             {% if items %}
-                                <label for="password">Введите пароль для формирования заказа</label><input type="password" class="form-control mt-3" name="password" id="password" required>
+                                <label for="city">Город</label><input type="text" class="form-control mt-3" name="city" id="city" required>
+                                <label for="street">Улица</label><input type="text" class="form-control mt-3" name="street" id="street" required>
+                                <label for="home">Дом</label><input type="number" class="form-control mt-3" name="home" id="home" required>
+                                <label for="aparts-number">Квартира</label><input type="number" class="form-control mt-3" name="aparts-number" id="aparts-number">
+                                <label for="postal-code">Почтовый индекс</label><input type="text" class="form-control mt-3" name="postal-code" id="postal-code" required>
                                 <div id="errorMessage" style="color: red"></div>
-                                <a href="#" class="btn btn-primary mt-3" onclick="createOrder('{{ user_login }}', {{ user.id }}, {{ items_json }})">Сформировать заказ</a>
+                                <a href="#" class="btn btn-primary mt-3" onclick="createOrder({{ user.id }}, {{ items_json }})">Сформировать заказ</a>
                             {% endif %}
                         </div>
                     </div>
@@ -129,49 +133,36 @@
             document.getElementById('total-price').innerText = `${totalPrice.toFixed(2)}`;
         }
 
-        async function createOrder(userLogin, userID, items) {
-            const url = "http://127.0.0.1:8000/auth/login";
-            const formData = {
-                login: userLogin,
-                password: document.getElementById("password").value
-            };
+        async function createOrder(userID, items) {
             const errorMsg = document.getElementById("errorMessage");
+            const url = `/orders`;
+            const city = document.getElementById('city').value;
+            const street = document.getElementById('street').value;
+            const home = document.getElementById('home').value;
+            const aparts_num = document.getElementById('aparts-number').value;
+            const postal_code = document.getElementById('postal-code').value;
+            const formData = {
+                user_id: userID,
+                items: items,
+                adress: `Адрес: г. ${city} ул. ${street} д. ${home} кв. ${aparts_num}, ${postal_code}`,
+                total_price: document.getElementById('total-price').innerText
+            };
             try {
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(formData),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
                 });
-                if (response.status === 200) {
-                    const url = `/orders`;
-                    document.getElementById('total-price').innerText
-                    const formData = {
-                        user_id: userID,
-                        items: items,
-                        total_price: document.getElementById('total-price').innerText
-                    };
-                    try {
-                        const response = await fetch(url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(formData)
-                        });
-                        if (response.ok) {
-                            const data = await response.json();
-                            window.location.href = `/my-orders`;
-                        } else {
-                            console.error('Failed to create order');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                    }
+                if (response.ok) {
+                    const data = await response.json();
+                    window.location.href = `/my-orders`;
                 } else {
-                    errorMsg.textContent = "Неверный логин или пароль";
+                    console.error('Failed to create order');
                 }
             } catch (error) {
-                console.error('Ошибка:', error);
+                console.error('Error:', error);
             }
         }
 

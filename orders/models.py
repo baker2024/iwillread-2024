@@ -16,6 +16,7 @@ class Order(Base):
     status_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("order_status.id"), default=1
     )
+    adress: Mapped[str] = mapped_column(nullable=True)
     decline_desc: Mapped[str] = mapped_column(nullable=True)
     user = relationship("User", back_populates="orders", lazy="selectin")
     order_items = relationship(

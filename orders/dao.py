@@ -10,9 +10,11 @@ class OrderDAO(BaseDAO):
     model = Order
 
     @classmethod
-    async def create_order(cls, user_id: int, total_price: float, items: list):
+    async def create_order(
+        cls, user_id: int, total_price: float, adress: str, items: list
+    ):
         async with async_session() as session:
-            new_order = Order(user_id=user_id, total_price=total_price)
+            new_order = Order(user_id=user_id, total_price=total_price, adress=adress)
             session.add(new_order)
             await session.commit()
 

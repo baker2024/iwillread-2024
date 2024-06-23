@@ -23,6 +23,19 @@ class Category(Base):
         return f"{self.name}"
 
 
+class Author(Base):
+    __tablename__ = "authors"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    image = Column(FileType(storage=storage))
+    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    products = relationship("Product", back_populates="author")
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Product(Base):
     __tablename__ = "products"
 
@@ -35,7 +48,8 @@ class Product(Base):
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
     price: Mapped[int] = mapped_column(nullable=False)
     count: Mapped[int] = mapped_column(nullable=False)
-    author: Mapped[Optional[str]] = mapped_column(nullable=True)
+    author_id: Mapped[int] = mapped_column(ForeignKey("authors.id"), nullable=False)
+    author = relationship("Author", back_populates="products", lazy="selectin")
     year: Mapped[Optional[str]] = mapped_column(nullable=True)
     years_old: Mapped[Optional[str]] = mapped_column(nullable=True)
     count_pages: Mapped[Optional[int]] = mapped_column(nullable=True)

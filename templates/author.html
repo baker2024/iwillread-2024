@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <style>
+            .card-img-top.fixed-size {
+                height: 400px;
+                object-fit: cover;
+                width: 100%;
+            }
+        </style>
+    <div class="container">
+        <div class="container text-center">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6">
+                    {% if author.image %}
+                    <img src="/{{ author.image }}" alt="Product Image" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% endif %}
+                    <h1 class="mb-0">{{author.name}}</h1>
+                    {% if author.description %}
+                    <p>{{ author.description}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if products %}
+            <h3 class="text-center my-4">Все книги автора</h3>
+            <div class="row row-cols-1 row-cols-md-3 g-4 products-container">
+                {% for product in products %}
+                <div class="col">
+                    <div class="card">
+                        <img src="{{ product.image }}" class="card-img-top fixed-size" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">{{ product.name }}</h5>
+                            <p class="card-text fs-4">{{ product.price }} ₽</p>
+                            <a href="/product?product_id={{ product.id }}" class="btn btn-primary">Перейти</a>
+                            {% if user %}
+                            <a class="btn btn-success" onclick="addToCart({{ user.id }}, {{ product.id }} )">Добавить в корзину</a>
+                            {% endif %}
+                            <div id="successMessage-{{ product.id }}" style="color: green; background: #b1ff7b;"></div>
+                            <div id="errorMessage-{{ product.id }}" style="color: red"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h1 class="text-center my-4">Не нашли книг у этого автора</h1>
+        {% endif %}
+    </div>
+    <script>
+    </script>
+{% endblock %}

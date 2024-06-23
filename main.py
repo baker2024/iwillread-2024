@@ -6,7 +6,13 @@ from sqladmin import Admin, ModelView
 
 from fastapi.middleware.cors import CORSMiddleware
 from admin.auth import AdminAuth, authentication_backend
-from admin.views import ProductsAdmin, UsersAdmin, CategoriesAdmin, OrdersAdmin
+from admin.views import (
+    AuthorsAdmin,
+    ProductsAdmin,
+    UsersAdmin,
+    CategoriesAdmin,
+    OrdersAdmin,
+)
 from database import engine
 from products.router import router as router_products
 from users.router import router as router_users
@@ -59,3 +65,4 @@ admin.add_view(UsersAdmin)
 admin.add_view(ProductsAdmin)
 admin.add_view(CategoriesAdmin)
 admin.add_view(OrdersAdmin)
+admin.add_view(AuthorsAdmin)

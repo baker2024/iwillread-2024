@@ -48,7 +48,7 @@
                 <div class="carousel-inner">
                     {% for product in products %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
-                        <img src="{{ product.image }}" class="d-block w-100" alt="{{ product.name }}">
+                        <img src="{{ product.image }}" class="d-block w-100 img-fluid carousel-img" alt="{{ product.name }}">
                         <div class="carousel-caption d-none d-md-block">
                             <h5>{{ product.name }}</h5>
                             <a href="/product?product_id={{ product.id }}" class="btn btn-primary">Посмотреть</a>
@@ -65,6 +65,7 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
+            
         {% endif %}
     </div>
 </div>

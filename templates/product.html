@@ -10,7 +10,7 @@
                     <div class="card-body">
                         <h1 class="card-title">{{ product.name }}</h1>
                         <p class="card-text">Описание: {{ product.description }}</p>
-                        <p class="card-text">{% if product.author %} Автор: <a href="">{{ product.author }}</a> {% endif %}</p>
+                        <p class="card-text">{% if author %} Автор: <a href="/author?id={{product.author_id}}">{{ author.name}}</a> {% endif %}</p>
                         <p class="card-text">{% if product.year %} Год издания: <a href="">{{ product.year }}</a> {% endif %}</p>
                         <p class="card-text">{% if product.years_old %} Возрастное ограничение: {{ product.years_old }} {% endif %}</p>
                         <p class="card-text">{% if product.count_pages %} Количество страниц: {{ product.count_pages }} {% endif %}</p>

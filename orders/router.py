@@ -26,12 +26,13 @@ async def create_order(
     if user:
         items = data.items
         total_price = float(data.total_price)
+        adress = data.adress
         for item in items:
             product_id = item["product_id"]
             product = await ProductDAO.find_product_by_id(product_id)
             item["price"] = product.price
 
-        result = await OrderDAO.create_order(user.id, total_price, items)
+        result = await OrderDAO.create_order(user.id, total_price, adress, items)
         await CartDAO.delete_cart(user.id)
 
         if not items:

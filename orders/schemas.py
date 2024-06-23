@@ -7,4 +7,4 @@ class SOrder(BaseModel):
     user_id: int
     items: list
     total_price: str
-
+    adress: str

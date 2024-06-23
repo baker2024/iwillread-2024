@@ -1,7 +1,7 @@
 from sqladmin import ModelView
 
 from orders.models import Order
-from products.models import Product, Category
+from products.models import Author, Product, Category
 from users.models import User
 
 
@@ -18,7 +18,7 @@ class UsersAdmin(ModelView, model=User):
     column_details_exclude_list = [User.hashed_password, User.cart_items]
     name = "Пользователь"
     name_plural = "Пользователи"
-    icon = "fa-solid fa-user"
+    icon = "fa-solid fa-users"
 
 
 class ProductsAdmin(ModelView, model=Product):
@@ -92,3 +92,13 @@ class OrdersAdmin(ModelView, model=Order):
     name = "Заказ"
     name_plural = "Заказы"
     icon = "fa-solid fa-dollar-sign"
+
+
+class AuthorsAdmin(ModelView, model=Author):
+    column_list = [
+        Author.name,
+    ]
+
+    name = "Автор"
+    name_plural = "Авторы"
+    icon = "fa-solid fa-user"
