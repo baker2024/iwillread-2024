@@ -1,17 +1,10 @@
 import aiohttp
 
-from typing import Annotated, Optional
-from fastapi import APIRouter, Depends, Form, HTTPException, Request, status, Response
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException, Response
 from fastapi.templating import Jinja2Templates
-from pydantic import ValidationError
 
-from exceptions import UserAlreadyExistsException
 from users.auth import get_password_hash, authenticate_user, create_access_token
 from users.dao import UserDAO
-from users.dependencies import get_current_user
-from users.models import User
 from users.schemas import SUserAuth, SUserCreate
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
