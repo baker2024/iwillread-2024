@@ -14,6 +14,8 @@ from core.router import router as router_main
 from basket.router import router as router_basket
 from orders.router import router as router_orders
 
+print("hello world")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
