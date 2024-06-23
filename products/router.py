@@ -74,7 +74,7 @@ async def get_author(
     request: Request, id: int = Query(None), user: User = Depends(get_current_user)
 ):
     if id:
-        products = await ProductDAO.find_all_filter(id)
+        products = await ProductDAO.find_all_by_author_id(id)
         author = await ProductDAO.find_author_by_id(id)
         serialized_products = [dict(product) for product in products]
         return templates.TemplateResponse(
