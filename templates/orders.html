@@ -39,7 +39,7 @@
     </div>
     <script>
         async function deleteOrder(orderID) {
-            const url = `http://127.0.0.1:8000/orders/del/${orderID}`;
+            const url = ` /orders/del/${orderID}`;
             try {
                 const response = await fetch(url, {
                     method: 'PUT',

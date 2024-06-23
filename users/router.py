@@ -52,7 +52,7 @@ async def login_user(response: Response, user_data: SUserAuth):
         async with aiohttp.ClientSession() as session:
             data = {"username": user_data.login, "password": user_data.password}
             async with session.post(
-                "http://127.0.0.1:8000/admin/login",
+                "/admin/login",
                 data=data,
                 allow_redirects=False,
             ) as result:
