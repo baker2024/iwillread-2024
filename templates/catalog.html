@@ -25,17 +25,13 @@
                     <option value="">Нет</option>
                     <option value="price_desc">Цена по убыванию</option>
                     <option value="price_asc">Цена по возрастанию</option>
-                    <option value="density_desc">Плотность по убыванию</option>
-                    <option value="density_asc">Плотность по возрастанию</option>
-                    <option value="width_desc">Ширина по убыванию</option>
-                    <option value="width_asc">Ширина по возрастанию</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Применить</button>
         </form>
 
         {% if products %}
-            <h1 class="text-center my-4">Все товары</h1>
+            <h1 class="text-center my-4">Все книги</h1>
             <div class="row row-cols-1 row-cols-md-3 g-4 products-container">
                 {% for product in products %}
                 <div class="col">
@@ -62,7 +58,7 @@
     <script>
         async function addToCart(user, product) {
             console.log(user, product);
-            const url = `https://iwillsew.onrender.com/cart/add`;
+            const url = `http://127.0.0.1:8000/cart/add`;
             const formData = {
                 user_id: user,
                 product_id: product,

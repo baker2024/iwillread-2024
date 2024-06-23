@@ -39,11 +39,11 @@ class ProductsAdmin(ModelView, model=Product):
         Product.category: "Категория",
         Product.name: "Название",
         Product.description: "Описание",
-        Product.width: "Ширина",
-        Product.density: "Плотность",
-        Product.composition: "Состав",
-        Product.country: "Страна",
         Product.price: "Цена",
+        Product.year: "Год издания",
+        Product.author: "Автор",
+        Product.years_old: "Возрастные ограничения",
+        Product.count_pages: "Количество страниц",
         Product.count: "Количество в наличии",
         Product.image: "Картинка товара",
     }
@@ -54,7 +54,6 @@ class ProductsAdmin(ModelView, model=Product):
 
 class CategoriesAdmin(ModelView, model=Category):
     column_list = [Category.id, Category.name]
-    column_details_exclude_list = [Category.products]
     column_labels = {
         Category.id: "ID",
         Category.name: "Название",

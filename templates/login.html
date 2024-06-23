@@ -3,11 +3,6 @@
 {% block content %}
     <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-6 text-center">
-                        <div class="img-container">
-                            <img src="/static/img/login-img.png" class="img-fluid" alt="">
-                        </div>
-                    </div>
                 <div class="col-md-6">
                     <div class="register-form">
                         <label for="login">Логин</label>
@@ -25,7 +20,7 @@
 
     <script>
         async function loginUser() {
-            const url = "https://iwillsew.onrender.com/auth/login";
+            const url = "http://127.0.0.1:8000/auth/login";
             const formData = {
                 login: document.getElementById("login").value,
                 password: document.getElementById("password").value

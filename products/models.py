@@ -33,12 +33,12 @@ class Product(Base):
     category = relationship("Category", back_populates="products", lazy="selectin")
     name: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
-    width: Mapped[int]
-    density: Mapped[int]
-    country: Mapped[str]
-    composition: Mapped[str]
     price: Mapped[int] = mapped_column(nullable=False)
     count: Mapped[int] = mapped_column(nullable=False)
+    author: Mapped[Optional[str]] = mapped_column(nullable=True)
+    year: Mapped[Optional[str]] = mapped_column(nullable=True)
+    years_old: Mapped[Optional[str]] = mapped_column(nullable=True)
+    count_pages: Mapped[Optional[int]] = mapped_column(nullable=True)
     image = Column(FileType(storage=storage))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 

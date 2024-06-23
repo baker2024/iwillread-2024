@@ -14,8 +14,6 @@ from core.router import router as router_main
 from basket.router import router as router_basket
 from orders.router import router as router_orders
 
-print("hello world")
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,7 +24,6 @@ app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
-    # 3000 - порт, на котором работает фронтенд на React.js
     "http://localhost:9000",
     "http://127.0.0.1:9000",
     "http://127.0.0.1:8000",
