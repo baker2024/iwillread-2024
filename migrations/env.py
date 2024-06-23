@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 
-from products.models import Product, Category
+from products.models import Product, Category, Author
 from users.models import User
 from orders.models import Order, OrderItem
 from basket.models import CartItem

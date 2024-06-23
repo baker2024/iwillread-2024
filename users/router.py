@@ -52,7 +52,7 @@ async def login_user(response: Response, user_data: SUserAuth):
         async with aiohttp.ClientSession() as session:
             data = {"username": user_data.login, "password": user_data.password}
             async with session.post(
-                "/admin/login",
+                "https://iwillread-2024.onrender.com/admin/login",
                 data=data,
                 allow_redirects=False,
             ) as result:
