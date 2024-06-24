@@ -13,7 +13,9 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-md-6">
                     {% if author.image %}
-                    <img src="/{{ author.image }}" alt="Product Image" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    <img src="/{{ author.image }}" alt="Фотография автора" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                    <img src="/static/img/user-profile.png" alt="Фотография автора" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                     {% endif %}
                     <h1 class="mb-0">{{author.name}}</h1>
                     {% if author.description %}

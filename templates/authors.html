@@ -17,7 +17,11 @@
                 <div class="col">
                     <div class="card">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                            <img src="{{ author.image }}" class="card-img-top img-thumbnail rounded-circle" style="width: 250px; height: 250px;" alt="...">
+                            {% if author.image %}
+                            <img src="/{{ author.image }}" class="card-img-top img-thumbnail rounded-circle" style="width: 250px; height: 250px;" alt="Фотография автора">
+                            {% else %}
+                            <img src="/static/img/user-profile.png" class="card-img-top img-thumbnail rounded-circle" style="width: 250px; height: 250px;" alt="Фотография автора">
+                            {% endif %}
                             <h5 class="card-title text-truncate mt-3">{{ author.name }}</h5>
                             <a href="/author?id={{ author.id }}" class="btn btn-primary mt-2">Подробнее о авторе</a>
                         </div>
